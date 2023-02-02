@@ -17,7 +17,8 @@ Si l'on souhaite récupérer les dernières installations de la machine, la comb
 cat /var/log/dpkg.log | grep "install " | tail -n 5
 ```
 
-On veut maintenant compter le nombre de paquets installés: ```bash
+On veut maintenant compter le nombre de paquets installés:
+```bash
 ┌──(root㉿DESKTOP-NDDQU00)-[/mnt/c/Users/hugue/Documents/wsl_exports]
 └─# dpkg -l | wc -l
 423
