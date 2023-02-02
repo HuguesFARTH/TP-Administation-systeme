@@ -145,3 +145,60 @@ On remarque que l'utilisateur ne peut toujours pas exécuter le fichier, en effe
 On se place dans le dossier test et on se retire les droits de lecture du dossier. On peut toujours exécuter le fichier mais pas lister les éléments du dossier test. On peut également sortir et rentrer dans le dossier.
 Le faite de retirer les droits d'écritures empêche globalement de voir les fichiers présent dans le dossier.
 
+Si on retire uniquement les droits d'exécution, on est capable de lister les fichiers dans de dossier test, mais pas d'accéder à l'intérieur avec la commande `cd`.
+```bash
+> ls -lR
+.:
+total 56
+-rw-r--r-- 1 kali kali 48642 Feb  1 16:37 spigot_temp
+drw-r-xr-x 3 kali kali  4096 Feb  2 08:15 test
+
+./test:
+ls: cannot access './test/sstest': Permission denied
+ls: cannot access './test/nouveau': Permission denied
+ls: cannot access './test/fichier': Permission denied
+total 0
+-????????? ? ? ? ?            ? fichier
+-????????? ? ? ? ?            ? nouveau
+d????????? ? ? ? ?            ? sstest
+ls: cannot open directory './test/sstest': Permission denied
+```
+
+Même un fois dans le dossier, il est impossible d'accéder aux autres fichiers/dossiers. La permission d'exécution semble se répercuter sur l'ensemble de la hiérachie. Il est néanmoins possible de sortir du dossier avec `cd ..`.
+
+Pour qu'un utilisateur du même groupe que le créateur puisse accéder à `fichier` sans être capable de le lire, il faut donner la permission de lecture et d'exécution. On obtient bien le fonctionnement voulu:
+```bash
+┌──(alice㉿DESKTOP-NDDQU00)-[/home/kali/test]
+└─$ ls -l && cat fichier && "blabze" > fichier
+total 8
+-rwxr-x--- 1 kali kali   11 Feb  1 15:02 fichier
+-rw-r--r-- 1 kali kali    0 Feb  2 08:14 nouveau
+drwxr-xr-x 2 kali kali 4096 Feb  2 08:14 sstest
+echo Hello
+bash: fichier: Permission denied
+```
+
+Le `umask` permet de définir les droits par défault des fichier créés dans le futur.
+
+```bash
+> umask 077 && touch nouveau_fichier_test && mkdir dossier_test && ls -l
+total 12
+drwx------ 2 kali kali 4096 Feb  2 08:44 dossier_test
+-rwxr-x--- 1 kali kali   11 Feb  1 15:02 fichier
+-rw-r--r-- 1 kali kali    0 Feb  2 08:14 nouveau
+-rw------- 1 kali kali    0 Feb  2 08:44 nouveau_fichier_test
+drwxr-xr-x 2 kali kali 4096 Feb  2 08:14 sstest
+```
+
+Si l'on souhaite restraindre l'accès uniquement en écriture, on peut utiliser `umask 044`
+Si l'on souhaite restraindre l'accès permettant uniquement la lecture on peut utiliser `umask 022`
+
+Quelques exemple de l'utilisation de chmod:
+* chmod u=rx,g=wx,o=r fic => r-x-wx-r--
+* chmod uo+w,g-rx fic (sachant r--r-x---) => rw-----w-
+* chmod 653 fic (sachant 711) => 653
+* chmod u+x,g=w,o-r fic (sachant r--r-x---) => r-x-w-----
+
+Pour résumer, on peut affecter de deux facons les permissions: l'écriture sous forme de chiffres, et l'écriture symbolique.
+* En utilisant les chiffres, on remplace les permissions existantes.
+* Avec l'écriture symbolique il est possible d'ajouter, supprimer, ou alors définir séparement les permissions user/groupe/other. Dans les deux premiers cas, on se base sur les permissions existantes.
