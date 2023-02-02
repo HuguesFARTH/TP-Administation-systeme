@@ -3,13 +3,13 @@
 ## TP 2 - Bash
 
  Le TP #2 porte sur les connaissances en Bash, les variables d'environnement et l'automatisation de tâches via la programmation de scripts. Il comporte plusieurs exercices : 
- * 1. Trouver les dossiers des commandes tapées par l'utilisateur 
- * 2. Contrôle de mot de passe
- * 3. Expressions rationnelles
- * 4. Contrôle d’utilisateur
- * 5. Factorielle
- * 6. Le juste prix
- * 7. Statistiques
+ * `1` Trouver les dossiers des commandes tapées par l'utilisateur 
+ * `2` Contrôle de mot de passe
+ * `3` Expressions rationnelles
+ * `4` Contrôle d’utilisateur
+ * `5` Factorielle
+ * `6` Le juste prix
+ * `7` Statistiques
 
 ## TP 3 - Utilisateurs, groupes et permissions
 
