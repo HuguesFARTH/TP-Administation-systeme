@@ -22,8 +22,16 @@ _Ici on définit le groupe infra comme étant le groupe primaire de bob primaire
 
 Une fois les groupes primaire configurés, on supprimer les groupes par défault `delgroup alice`.
 
-4. 
-//TODO
+4. On pourrait le faire "manuellement": dans un premier temps on regarde les utilisateurs de infra dans /etc/group: `cat /etc/group | grep infra`. On récupère seulement les utilisateurs ayant infra comme groupe non primaire. Pour récupérer les autres utilisateurs, on passe par le fichier /ect/passwd et on vérifie les utilisateurs ayant pour groupe primaire l'id de infra (dans mon cas `1002`). Avec un peu de réflexion on arrive à assembler ce procédé en une ligne:
+```bash
+cat /etc/passwd | grep $(cat /etc/group | grep infra | cut -d: -f3) | cut -d: -f1 && cat /etc/group | grep infra | cut -d: -f4-
+```
+
+Un deuxième méthode serait d'appeler la commande `id` pour chaque utilisateur et de vérifier son appartenance au groupe infra.
+```bash
+for user in $(cut -d: -f1 /etc/passwd); do id -nG $user | grep -qw infra && echo $user; done
+``` 
+_Pour les paramètres utilisé dans grep: -q permet d'arreter la recherche dès qu'un occurence a été trouvé, et -w  permet de rechercher un mot entier, plutôt que n'importe quelle correspondance avec le motif._
 
 5. On utilisera la commande `chgrp` afin d'affecter les groupes correspondant.
 ```bash

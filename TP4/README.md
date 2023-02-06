@@ -32,4 +32,4 @@ WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 ```
 Cette différence peut s'expliquer 
 
-Le fichier dpkg.log contiens uniquement les logs, il est volatile et demande une 
+Le fichier dpkg.log contiens uniquement les logs, et ne garantie pas que tous les paquets installés soient répertoriés dans le fichier.
